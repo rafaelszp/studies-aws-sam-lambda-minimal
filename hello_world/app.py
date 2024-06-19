@@ -58,10 +58,10 @@ def lambda_handler(event, context):
     if invoke_resp['Payload']:
         payload = invoke_resp['Payload']
         results = json.loads(payload.read())
-    print('------------------------------')
+    print('--------------------------------------------------------------------------------')
     print('Results from child function: ')
     print(results)
-    print('------------------------------')
+    print('--------------------------------------------------------------------------------')
 
     return {
         "statusCode": 200,
