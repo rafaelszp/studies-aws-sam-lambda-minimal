@@ -10,21 +10,30 @@ This project contains source code and supporting files for a serverless applicat
 The application uses several AWS resources, including Lambda functions and an API Gateway API. These resources are defined in the `template.yaml` file in this project. You can update the template to add AWS resources through the same deployment process that updates your application code.
 
 
+## Setup python
+```
+mkdir ~/dev/python/envs -p
+python -m venv ~/dev/python/envs/aws
+source ~/dev/python/envs/aws/bin/activate.fish
+pip install --upgrade pip
+pip install -r hello_world/requirements.txt
+```
+
 ## Testing locally
 
 1. local start
 
 ```shell
 #start lambda
-sam local start-lambda
+sam local start-lambda --host 0.0.0.0 --log-file /dev/stdout
 
 #Running Hello World
 aws lambda invoke --function-name "HelloWorldFunction" --endpoint-url "http://127.0.0.1:3001"
- --no-verify-ssl out.txt
+ --no-verify-ssl /dev/stdout
 
 #Running ChildFnFunction
 aws lambda invoke --function-name "ChildFnFunction" --endpoint-url "http://127.0.0.1:3001"
- --no-verify-ssl out.txt
+ --no-verify-ssl /dev/stdout
 ```
 
 

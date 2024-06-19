@@ -1,4 +1,7 @@
 import json
+import boto3
+import json
+import os
 
 # import requests
 
@@ -33,10 +36,37 @@ def lambda_handler(event, context):
 
     #     raise e
 
+    
+    if os.environ.get("AWS_SAM_LOCAL"):
+        LAMBDA_CLIENT = boto3.client('lambda',endpoint_url='http://172.17.0.1:3001')
+    else:
+        LAMBDA_CLIENT = boto3.client('lambda')
+
+    encoded_payload = json.dumps({'first_name': 'rafael'}).encode('utf-8')
+
+    invoke_resp = LAMBDA_CLIENT.invoke(
+        FunctionName='ChildFnFunction',
+        InvocationType='RequestResponse',
+        Payload=encoded_payload
+    )
+
+    status_code = invoke_resp['StatusCode']
+    if status_code != 200:
+        raise RuntimeError('Call target lambda function failed =[')
+    
+    results = {}
+    if invoke_resp['Payload']:
+        payload = invoke_resp['Payload']
+        results = json.loads(payload.read())
+    print('------------------------------')
+    print('Results from child function: ')
+    print(results)
+    print('------------------------------')
+
     return {
         "statusCode": 200,
         "body": json.dumps({
             "message": "hello world",
-            # "location": ip.text.replace("\n", "")
+            "childResponse": results
         }),
     }
